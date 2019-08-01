@@ -1,10 +1,8 @@
 import argparse
-import visa
+import visa #change to py.serial
 import sys
 import time
 import datetime
-import serial
-#change to py.serial from visa
 
 ### INSTRUCTIONS
 

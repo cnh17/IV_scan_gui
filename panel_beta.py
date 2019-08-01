@@ -1,11 +1,14 @@
 import tkinter as tk
 from tkinter import messagebox as msg
+#import Run_IV.py as Run
 import sys
-import Run_IV_blocks as run
+import subprocess
+import numpy as np
 
 master = tk.Tk()
 
 master.title("NBI: IV / CV scan")
+#master.geometry('1000x600')
 frame = tk.Frame(master, bg='pink')
 frame.grid(row=1, rowspan = 3, column=1, columnspan = 5, sticky = tk.W+tk.E)
 
@@ -17,7 +20,6 @@ tk.Label(master, text="MODULE TESTING", font='Helvetica 18 bold').grid(row=0, co
 tk.Label(frame, text="User:", bg='pink').grid(row=1, column=1, pady=15)
 e4 = tk.Entry(frame, width=10, bg='DarkSeaGreen1')
 e4.grid(row=1, column=2)
-e4.insert(10,"cern")   #Starting username
 
 #-----------------------------------------------------------------------------#
 ##   Set measurement type   ##
@@ -26,7 +28,6 @@ tk.Label(frame, text="Measurement type:", bg='pink').grid(row=2, column=1)
 var = tk.IntVar()
 CVoltage = tk.Radiobutton(frame, text = "CV", variable = var, value = 1, bg='pink').grid(row=2, column=2)
 IVoltage = tk.Radiobutton(frame, text = "IV", variable = var, value = 2, bg='pink').grid(row=2, column=3)
-var.set(2)
 
 def calcmeastype():
     if var.get() > 1.5:
@@ -50,6 +51,8 @@ e3 = tk.Entry(frame, width=10, bg='DarkSeaGreen1')      #(master, cnf{}, **kw)
 e1.insert(10, "0")
 e2.insert(10,"2")
 e3.insert(10, "1")
+e4.insert(10,"cnh")
+var.set(2)
 
 ## Placing value boxes ##
 e1.grid(row=3, column=2)
@@ -188,17 +191,22 @@ def config():
         call = msg.showinfo( "Configuration", "VALUES CHOSEN \n\nUser: %s \nMeasurement type: %s \nStart Voltage: %s \nEnd Voltage: %s\nStep Size: %s \n \nADDITIONAL SETTINGS \nSweep Back: %s \nTerminals: %s \nNPLC: %s \nOutput Filename: %s \nNo. of Measurements: %s \nTime Delay: %s \nMeasurement Speed: %s \nRamp Speed: %s" % (e4.get(), calcmeastype(), e1.get(), e2.get(), e3.get(), sweepback_val(), terminal_val(), e5.get(), e6.get(), e7.get(), e8.get(), e9.get(), e10.get() ))
         return call
     Configure()
-    run.init()
-    run.volt_list()
     pass
-config_buttn = tk.Button(master, text='Configure', command=config).grid(row=10, 
-                        column=2, sticky=tk.W, pady=15, padx=5)
+config_buttn = tk.Button(master, text='Configure', command=config).grid(row=10, column=2, sticky=tk.W, pady=4, padx=4)
 
-start_buttn = tk.Button(master, text="START", command=run.start, bg="green").grid(row=10, 
+def start():    
+    subprocess.call(['python', 'Run_IV.py', e1.get(), e2.get(), e3.get()])
+    #show should be float, dont allow letters
+    #show on screen that system is running by a pop up? that could show how long it will take and if it is running properly.
+    pass
+start_buttn = tk.Button(master, text="START", command=start, bg="green").grid(row=10, 
                        column=3, sticky=tk.W, pady=15, padx=5)
 
-abort_buttn = tk.Button(master, text="ABORT", command=run.abort, bg="red").grid(row=10, 
-                       column=4, sticky=tk.W, pady=15, padx=5)
+def abort():
+    sys.exit(0)
+    #produce message showing it is aborting
+    pass
+abort_buttn = tk.Button(master, text="ABORT", command=abort, bg="red").grid(row=10, column=4, sticky=tk.W, pady=15, padx=5)
 
 #-----------------------------------------------------------------------------#
 master.mainloop()
