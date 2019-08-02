@@ -2,14 +2,17 @@
 
 This is code that runs a GUI to control an IV or CV scan of a Keithley 2410 power supply.
 
+LOG
 Uploaded 31/07/19
  - First commit which works but can not be aborted, will solve by splitting Run_IV.py into blocks of functions to run within panel.py
- 
- Uploaded 1/08/19
+Uploaded 1/08/19
  - Second commit, added more options for user to enter values into GUI. 
  - I have saved this version as panel_beta.py which runs with Run_IV.py
  
- Uploaded 2/08/19
+Uploaded 2/08/19
  - Third commit, it is very close to final product, can now abort using KeyboardInterrupt and ABORT command
 
-- CODE TO RUN: is panel.py: makes GUI and can control power source
+INSTRUCTIONS
+- install visa on computer
+- to control smu insert name of port it is connected to.
+- add values to GUI , CONFIGURE this data, then click START.
