@@ -11,3 +11,5 @@ Uploaded 31/07/19
  
  Uploaded 2/08/19
  - Third commit, it is very close to final product, can now abort using KeyboardInterrupt and ABORT command
+
+- CODE TO RUN: is panel.py: makes GUI and can control power source
