@@ -2,7 +2,7 @@ import visa
 import sys
 import time
 import datetime
-from panel import e1, e2, e3, e4, e5, e6, calcmeastype, sweepback_val, terminal_val
+from panel import e1, e2, e3, e4, e5, e6, calcmeastype, sweepback_val, terminal_val, e7, e8, e9, e10
 
 ###############################################################################
 # MESSAGING
@@ -81,12 +81,13 @@ def volt_list():
     
     if sweepback_val() is "ON":   #check
         list_volt += list_volt[:-1][::-1]
-    pass
+    return list_volt
+
+rm = visa.ResourceManager()
+smu = rm.open_resource("ASRL/dev/cu.usbserial-FT0KNCGK::INSTR")
 
 ### configure the smu
 def init():
-    rm = visa.ResourceManager()
-    smu = rm.open_resource("ASRL/dev/cu.usbserial-FT0KNCGK::INSTR")
     smu.baud_rate = 9600
     smu.timeout = None
     
@@ -99,7 +100,7 @@ def init():
     smu.write(':SENS:CURR:PROT 2E-8')
     smu.write(':SENS:CURR:RANG MIN')
     smu.write(':SENS:CURR:NPLC %s' % e5.get())
-    if terminal_val() is "rear":
+    if terminal_val() is "rear":      #check
         smu.write(':ROUT:TERM REAR')
     smu.write(':FORM:ELEM VOLT, CURR')
     pass
@@ -112,28 +113,28 @@ def init():
 def start():
     smu.write(':OUTP ON')
     raw_data = []
-    for x in list_volt:
+    for x in volt_list():
         print (msg("preparing for measurement(s) at %s V" % x))
-        ramp(smu, x, args.ramp_speed)
-        time.sleep(args.time_delay)
-        for n in range(args.number_meas):
+        ramp(smu, x, e10.get())
+        time.sleep(e8.get())
+        for n in range(e7.get()):
             print (msg("taking measurement"))
             data_str = "%s,%s" % (datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"), smu.query(':READ?'))
             raw_data.append(data_str)
-            time.sleep(args.meas_speed)
-    ramp(smu, 0, args.ramp_speed) # ramp down to 0 V
+            time.sleep(e9.get())
+    ramp(smu, 0, e10.get()) # ramp down to 0 V
     smu.write(':OUTP OFF')
     
     #write text file
     def text():
-        text_file = open(args.output_name+".text","w")
-        text_file.write("name: %s\n" % sys.argv[0]) 
-        text_file.write("args: %s\n\n" % args) 
+        text_file = open(e6.get()+".text","w")
+        text_file.write("Name: %s\n" % e4.get()) 
+        text_file.write("Arguments: \nMeasurement type= %s, Start Voltage: %s, End Voltage: %s, Step Size: %s, Sweep Back: %s, Terminals: %s, NPLC: %s, Output Filename: %s, No. of Measurements: %s, Time Delay: %s, Measurement Speed: %s, Ramp Speed: %s" % (calcmeastype(), e1.get(), e2.get(), e3.get(), sweepback_val(), terminal_val(), e5.get(), e6.get(), e7.get(), e8.get(), e9.get(), e10.get() )) 
         text_file.write("%-10s %-8s  %-13s  %-13s\n" % ("Date","Time","Voltage [V]","Current [I]"))
         for x in raw_data:
             x = x.replace(",","  ")
             text_file.write(x)
-            text_file.close()
+        text_file.close()
         pass
     pass
 
@@ -142,29 +143,10 @@ def start():
 ###############################################################################
 def abort():
     print (" aborted")
-    ramp(smu, 0, args.ramp_speed)
+    ramp(smu, 0, e10.get())
     smu.write(':OUTP OFF')
 #    sys.exit(0)
     pass
-
-###############################################################################
-# WRITE OUTPUT
-###############################################################################
-### write the results to a text file
-
-#def text():
-#    text_file = open(args.output_name+".text","w")
- #   text_file.write("name: %s\n" % sys.argv[0]) 
- ##   text_file.write("args: %s\n\n" % args) 
-  #  text_file.write("%-10s %-8s  %-13s  %-13s\n" % ("Date","Time","Voltage [V]","Current [I]"))
- #   for x in raw_data:
- ##       x = x.replace(",","  ")
- #       text_file.write(x)
- #   text_file.close()
- #   pass
-
-
-
 
 
 

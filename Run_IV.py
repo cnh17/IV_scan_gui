@@ -112,7 +112,7 @@ except KeyboardInterrupt:
     print ("aborted")
     ramp(smu, 0, args.ramp_speed)
     smu.write(':OUTP OFF')
-    sys.exit(0)
+    #sys.exit(0)
 
 ### write the results to a text file
 text_file = open(args.output_name+".text","w")

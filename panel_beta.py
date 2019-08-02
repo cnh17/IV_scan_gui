@@ -3,7 +3,6 @@ from tkinter import messagebox as msg
 #import Run_IV.py as Run
 import sys
 import subprocess
-import numpy as np
 
 master = tk.Tk()
 
@@ -86,7 +85,7 @@ ON = tk.Radiobutton(frame, text = "rear", variable = var3, value = 2, bg='pink')
 var3.set(1)
 
 def terminal_val():
-    if var2.get() > 1.5:
+    if var3.get() > 1.5:
         MeasType = 'rear'
     else:
         MeasType = 'front'
@@ -196,6 +195,7 @@ config_buttn = tk.Button(master, text='Configure', command=config).grid(row=10, 
 
 def start():    
     subprocess.call(['python', 'Run_IV.py', e1.get(), e2.get(), e3.get()])
+    #subprocess.Popen(["python", "RUN_IV.py", e1.get(), e2.get(), e3.get()])
     #show should be float, dont allow letters
     #show on screen that system is running by a pop up? that could show how long it will take and if it is running properly.
     pass
@@ -203,7 +203,7 @@ start_buttn = tk.Button(master, text="START", command=start, bg="green").grid(ro
                        column=3, sticky=tk.W, pady=15, padx=5)
 
 def abort():
-    sys.exit(0)
+    #sys.exit(0)
     #produce message showing it is aborting
     pass
 abort_buttn = tk.Button(master, text="ABORT", command=abort, bg="red").grid(row=10, column=4, sticky=tk.W, pady=15, padx=5)
