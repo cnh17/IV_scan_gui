@@ -1,3 +1,10 @@
+"""
+Author: Cathrine Hogh, cathyhogh@gmail.com
+Supervisor: Craig Wiglesworth
+Created: 2/08/2019
+Python v3.6.2
+Tkinter v8.6
+"""
 import tkinter as tk
 from tkinter import messagebox as message
 import visa
@@ -6,6 +13,8 @@ import time
 import datetime
 
 master = tk.Tk()
+#-----------------------------------------------------------------------------#
+##   setup GUI   ##
 
 master.title("NBI: IV / CV scan")
 frame = tk.Frame(master, bg='pink')
@@ -46,7 +55,7 @@ tk.Label(frame, text="V        Step size:", bg='pink').grid(row=3, column=5)
 
 e1 = tk.Entry(frame, width=10, bg='DarkSeaGreen1')
 e2 = tk.Entry(frame, width=10, bg='DarkSeaGreen1')
-e3 = tk.Entry(frame, width=10, bg='DarkSeaGreen1')      #(master, cnf{}, **kw)
+e3 = tk.Entry(frame, width=10, bg='DarkSeaGreen1')
 
 ##  Start values (could also be blank) ##
 e1.insert(10, "0")
@@ -63,12 +72,12 @@ e3.grid(row=3, column=6)
 
 tk.Label(frame, text="Additional Settings (Default values set)", font='Helvetica 14 bold').grid(row=4, column=1, columnspan = 6, sticky = tk.W+tk.E, pady=4)
 
-## SWEEP BACK
+##   SWEEP BACK
 tk.Label(frame, text="Sweep back:", bg='pink').grid(row=5, column=1)
 var2 = tk.IntVar()
 OFF = tk.Radiobutton(frame, text = "OFF", variable = var2, value = 1, bg='pink').grid(row=5, column=2)
 ON = tk.Radiobutton(frame, text = "ON", variable = var2, value = 2, bg='pink').grid(row=5, column=3)
-var2.set(1)
+var2.set(1)   #inital set as OFF
 
 def sweepback_val():
     if var2.get() > 1.5:
@@ -77,12 +86,12 @@ def sweepback_val():
         MeasType = 'OFF'
     return MeasType
 
-## TERMINALS
+##    TERMINALS
 tk.Label(frame, text="Terminals:", bg='pink').grid(row=6, column=1)
 var3 = tk.IntVar()
 OFF = tk.Radiobutton(frame, text = "front", variable = var3, value = 1, bg='pink').grid(row=6, column=2)
 ON = tk.Radiobutton(frame, text = "rear", variable = var3, value = 2, bg='pink').grid(row=6, column=3)
-var3.set(1)
+var3.set(1)   #initial set as OFF
 
 def terminal_val():
     if var3.get() > 1.5:
@@ -91,10 +100,10 @@ def terminal_val():
         MeasType = 'front'
     return MeasType
 
-## NPLC
+##    NPLC
 tk.Label(frame, text="NPLC:", bg='pink').grid(row=7, column=1)
 e5 = tk.Entry(frame, width=10, bg='DarkSeaGreen1') 
-e5.insert(10,"1")
+e5.insert(10,"1")   #initial set as 1
 e5.grid(row=7, column=2)
 
 ## Output Filename ##
@@ -109,25 +118,25 @@ e6.grid(row=8, column=2)
 ## no. of Measurements
 tk.Label(frame, text="No. of Measurements:", bg='pink').grid(row=5, column=4, columnspan=2, sticky=tk.E)
 e7 = tk.Entry(frame, width=10, bg='DarkSeaGreen1') 
-e7.insert(10,"10")
+e7.insert(10,"10")    #initial set as 10
 e7.grid(row=5, column=6)
 
 ## time delay
 tk.Label(frame, text="Time Delay:", bg='pink').grid(row=6, column=5)
 e8 = tk.Entry(frame, width=10, bg='DarkSeaGreen1') 
-e8.insert(10,"10")
+e8.insert(10,"10")   ##initial set as 10
 e8.grid(row=6, column=6)
 
 ## Measurement speed
 tk.Label(frame, text="Measurement Speed:", bg='pink').grid(row=7, column=4, columnspan=2, sticky=tk.E)
 e9 = tk.Entry(frame, width=10, bg='DarkSeaGreen1') 
-e9.insert(10,"1")
+e9.insert(10,"1")    #initial set as 1
 e9.grid(row=7, column=6)
 
 ## ramp speed
 tk.Label(frame, text="Ramp Speed:", bg='pink').grid(row=8, column=5)
 e10 = tk.Entry(frame, width=10, bg='DarkSeaGreen1') 
-e10.insert(10,"1")
+e10.insert(10,"1")     #initial set as 1
 e10.grid(row=8, column=6)
 
 #-----------------------------------------------------------------------------#
@@ -158,20 +167,18 @@ def reset_defaults():
    var2.set(1)             #sweep back off default
    var3.set(1)             #front terminal default
 
-quit_buttn = tk.Button(master, text='Quit', command=master.quit).grid(row=0, column=0, 
-         sticky=tk.W, pady=1, padx=1)
+quit_buttn = tk.Button(master, text='Quit', command=master.quit).grid(row=0, column=0, sticky=tk.W, pady=1, padx=1)
 
-reset_buttn = tk.Button(master, text='Reset', command=reset_defaults).grid(row=0, column=8, 
-         sticky=tk.W, pady=1, padx=1)
+reset_buttn = tk.Button(master, text='Reset', command=reset_defaults).grid(row=0, column=8, sticky=tk.W, pady=1, padx=1)
 
 def HelpCallBack():
-   call = message.showinfo( "Instructions", "Please insert your username, measurement type and Voltage settings. \nAdditional setting options are set at default values.\nPlease note to stop data readings, press cmd+C, cmd+., or equivalent in the terminal and then click ABORT in order to safely reduce the power source voltage down to zero.")
+   call = message.showinfo( "Instructions", "Please insert your username, measurement type and Voltage settings. \nAdditional setting options are set at default values.\nPlease note to stop data readings, press cmd+C, cmd+., or equivalent in the terminal and then click ABORT in order to safely reduce the power source voltage down to zero. \n\nTo begin taking measurements, click CONFIGURE to set up the power source and then click START.")
    return call
 help_buttn = tk.Button(master, text = "Help", command = HelpCallBack).grid(row=0, 
              column=7, sticky=tk.W, pady=1, padx=4)
 
 #-----------------------------------------------------------------------------#
-##   RUN_IV   //     Configure    ##
+##   from RUN_IV.py :     CONFIGURE button   ##
 
 def msg(x):
     return "[%s] %s" % (datetime.datetime.now().strftime("%H:%M:%S"), x)
@@ -196,9 +203,10 @@ def Configure():
         return call
 
 rm = visa.ResourceManager()
+#print (rm.list_resources())   ##  to find port on computer connected to power supply
 smu = rm.open_resource("ASRL/dev/cu.usbserial-FT0KNCGK::INSTR")
 
-### configure the smu
+##    configure the smu
 def init():
     smu.baud_rate = 9600
     smu.timeout = None
@@ -212,7 +220,7 @@ def init():
     smu.write(':SENS:CURR:PROT 2E-8')
     smu.write(':SENS:CURR:RANG MIN')
     smu.write(':SENS:CURR:NPLC %s' % e5.get())
-    if terminal_val() is "rear":      #check
+    if terminal_val() is "rear":
         smu.write(':ROUT:TERM REAR')
     smu.write(':FORM:ELEM VOLT, CURR')
     pass
@@ -221,7 +229,6 @@ def volt_list():
     list_volt = []
     x = int(e1.get())
     
-    ## change to have this in pop up config ##
     if int(e3.get()) <= 0:
         sys.exit("step size must be > 0")
         
@@ -250,7 +257,7 @@ def config():
                 return call
             Error()
             return
-
+    
     Configure()
     init()
     volt_list()
@@ -259,7 +266,7 @@ def config():
 config_buttn = tk.Button(master, text='Configure', command=config).grid(row=10, 
                         column=2, sticky=tk.W, pady=15, padx=5)
 #-----------------------------------------------------------------------------#
-##   RUN_IV   //     Start / Abort    ##
+##   from RUN_IV.py :       Start / Abort    ##
 
 def start():
     smu.write(':OUTP ON')

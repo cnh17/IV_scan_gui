@@ -1,5 +1,6 @@
 #GUI for IV scan
 
+
 This is code that runs a GUI to control an IV or CV scan of a Keithley 2410 power supply.
 
 LOG
@@ -8,11 +9,19 @@ Uploaded 31/07/19
 Uploaded 1/08/19
  - Second commit, added more options for user to enter values into GUI. 
  - I have saved this version as panel_beta.py which runs with Run_IV.py
- 
-Uploaded 2/08/19
+ Uploaded 2/08/19
  - Third commit, it is very close to final product, can now abort using KeyboardInterrupt and ABORT command
+ - Only need to run panel.py script as have merged RUN_IV.py into it.
+
 
 INSTRUCTIONS
+- This code is written to work for python v3.6.2
 - install visa on computer
-- to control smu insert name of port it is connected to.
+- install Tkinter v8.6
+- to control smu, insert name of port iin panel.py script.
+- run panel.py
 - add values to GUI , CONFIGURE this data, then click START.
+
+
+Written by Cathrine Hogh
+Supervised by Craig Wiglesworth
